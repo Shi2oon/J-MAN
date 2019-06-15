@@ -5,13 +5,13 @@
 
 %DIC IMAGE:         <--------------mesh.winsize(1)---------->
 %                  ...........................................
-%             |    :  FE----------------------------------   :                                            .
+%             |    :  FE----------------------------------   :  
 %             |    :  |  Jo----------------------------  |   :
 %             |    :  |  |  Ji----------------------  |  |   :
 % mesh.winsize(2)  :========> crack in pos x dir.  |  |  |   :
 %             |    :  |  |  ----------------------Ji  |  |   :
 %             |    :  |  ----------------------------Jo  |   :
-%             |    :  ----------------------------------FE   :                                            .
+%             |    :  ----------------------------------FE   :        .
 %                  :.........................................:
 % FE => mesh.winFE(x&y,point)-window size of image considered for the FE analysis
 % Jo => Jint.nout(x&y,point) -outer Jintegral path
@@ -26,24 +26,25 @@
 %% set the scene
 % JMAN_EBSD_Dashboard
 
-% clear all; 
-colordef white; clc;  close all; warning('off'); clearvars -except input I Ii ij
+clear all;      colordef white;         clc;  
+close all;      warning('off');         %clearvars -except input I Ii ij
 
-% input.fillname='13';
-% input.Trail_number=i; %try to do at least 4
-% input.Dir='P:\Abdo\EBSD Data\Alex xEBSD\001_berko_3rd_face_XEBSD';
-input.fullpath = fullfile(input.Dir,[num2str(input.fillname) '.mat']);
-% input.results=fullfile(input.Dir,'J-MAN 3'); mkdir(input.results);
-input.unit = 'mm'; %meter (m) or milmeter (mm) or micrometer(\mum) ;
-input.StressUnits = 'MPa';
-input.rotate180 = false;
-input.isXEBSD = true;
+input.fillname     = '13';
+input.Trail_number = 1; %try to do at least 4
+input.Dir          = 'P:\Abdo\EBSD Data\Alex xEBSD\001_berko_3rd_face_XEBSD';
+input.fullpath     = fullfile(input.Dir,[num2str(input.fillname) '.mat']);
+input.results      = fullfile(input.Dir,'J-MAN 3'); mkdir(input.results);
+input.unit         = 'mm'; %meter (m) or milmeter (mm) or micrometer(\mum) ;
+input.StressUnits  = 'MPa';
+input.rotate180    = false;
+input.isXEBSD      = true;
 
 %%
 addpath([pwd '\functions']);
 addpath([pwd '\functions\LoadEBSD']);
 
-fprintf(1,'FE code to evaluate J-integral from HR-EBSD Data \nby Phil Earp - philip.earp@materials.ox.ac.uk\n');
+fprintf(1,'FE code to evaluate J-integral from HR-EBSD Data \n');
+fprintf(1,'by Phil Earp - philip.earp@materials.ox.ac.uk\n');
 fprintf(1,'S.Barhli and T.Becker\n\n');
 fprintf('Trial number %d\n\n',input.Trail_number);
 
@@ -54,18 +55,18 @@ fprintf('...done\n')
 %% INPUT MATERIAL PROPERTIES AND DATA
 fprintf('\nLoading data...');
 %Material properties
-mat.nu = 0.36; % Poisson's ratio
-mat.E  = 110E9; % Young's Modulus [Pa]
+mat.nu    = 0.36; % Poisson's ratio
+mat.E     = 110E9; % Young's Modulus [Pa]
 mat.yield = 1E9; % Yield Stress [Pa]
 fprintf ('Poissons ratio %0.1i\nYoungs modulus %0.1i GPa\nTensile Strength %0.1i MPa\n\n'...
           ,mat.nu,mat.E/1e9,mat.yield/1e6);
       
 mat.stressstate = 'plane_stress'; %set to'plane_strain' or 'plane_stress'
-[mat] = matprop(mat);                %sets material peoperties: E,nu,etc...
+[mat]           = matprop(mat);   %sets material peoperties: E,nu,etc...
 
 %% INPUT MATERIAL PROPERTIES AND DATA
 fprintf('\nPreparing data...');
-[mat] = matprop();                %sets material peoperties: E,nu,etc...
+[mat]  = matprop();                %sets material peoperties: E,nu,etc...
 [mesh] = loadUd(EBSDdata);
 fprintf('done\n')
 fprintf(1,'data points (gauss points) defined:%6.0f \n',length(mesh.dispgraddata));
@@ -76,11 +77,14 @@ close all
 fprintf('\nMeshing...');
 [el,mesh] = meshDIC(mesh);
 fprintf('done\n')
-fprintf(1,'Number of elements:%6.0f (%3.0f x%3.0f)\n',mesh.elFE,mesh.winFE(2,2)-mesh.winFE(1,2),mesh.winFE(2,1)-mesh.winFE(1,1));
+fprintf(1,'Number of elements:%6.0f (%3.0f x%3.0f)\n',mesh.elFE,...
+    mesh.winFE(2,2)-mesh.winFE(1,2),mesh.winFE(2,1)-mesh.winFE(1,1));
 % FEM (calculate element stress/strain & assemble into global system)
 fprintf('\nFEM analysis');
-[el] = FEanalysisStrains(el,mat,mesh);%runs isoparematric FE anlysis to slove for strain and stress at Gauss points
-[gl] = makeglobal(el, mesh);         %Interpolates FE results into a global domain at nodal co-ordinates
+% runs isoparematric FE anlysis to slove for strain and stress at Gauss points
+[el] = FEanalysisStrains(el,mat,mesh); 
+% Interpolates FE results into a global domain at nodal co-ordinates
+[gl] = makeglobal(el, mesh);           
 fprintf(': done\n');
 
 % save('tmp.mat')
@@ -91,18 +95,19 @@ isDispOk = 'N';H2 = [];
 while (isDispOk ~= 'Y')
     %Printing screen for manual choice of J-Integral contour, and mask function
     close(H2);
-    H1=prePlot(mesh,gl,1,el);
+    H1 = prePlot(mesh,gl,1,el);
     
     title('Select Crack Tip')
     [estcrktip(1), estcrktip(2)] = ginput(1);
     plot(estcrktip(1),estcrktip(2),'r.','MarkerSize',20); drawnow;
     
     title('Select (Multiple) Masks - Press ENTER when done')
-    t=0;id=1;
+    t = 0;          id = 1;
     while (t<1)
         [xmask, ymask] = ginput(2);
-        rectangle('Position',[min(xmask(1),xmask(2)),min(ymask(1),ymask(2)),abs(xmask(2)-xmask(1)),abs(ymask(2)-ymask(1))],'FaceColor','k'); drawnow;
-        [xmask,ymask] = convCoord(xmask,ymask,mesh.winFE,mesh.UFE);
+        rectangle('Position',[min(xmask(1),xmask(2)),min(ymask(1),ymask(2)),...
+            abs(xmask(2)-xmask(1)),abs(ymask(2)-ymask(1))],'FaceColor','k'); drawnow;
+        [xmask,ymask]  = convCoord(xmask,ymask,mesh.winFE,mesh.UFE);
         Jint.mask(:,:,id) = [ymask(1) ymask(2);xmask(1) xmask(2)]; Jint.mask(Jint.mask<1)=1;
         id = id+1;
         t = waitforbuttonpress();
@@ -110,12 +115,14 @@ while (isDispOk ~= 'Y')
     
     title('Select Outer J-Contour')
     [xo,yo] = ginput(2);
-    rectangle('Position',[min(xo(1),xo(2)),min(yo(1),yo(2)),abs(xo(2)-xo(1)),abs(yo(2)-yo(1))],'EdgeColor','W'); drawnow;
+    rectangle('Position',[min(xo(1),xo(2)),min(yo(1),yo(2)),abs(xo(2)-xo(1)),...
+        abs(yo(2)-yo(1))],'EdgeColor','W'); drawnow;
     [xo,yo] = convCoord(xo,yo,mesh.winFE,mesh.UFE);
     
     title('Select Inner J-Contour')
     [xi,yi] = ginput(2);
-    rectangle('Position',[min(xi(1),xi(2)),min(yi(1),yi(2)),abs(xi(2)-xi(1)),abs(yi(2)-yi(1))],'EdgeColor','W');drawnow;
+    rectangle('Position',[min(xi(1),xi(2)),min(yi(1),yi(2)),abs(xi(2)-xi(1)),...
+        abs(yi(2)-yi(1))],'EdgeColor','W');drawnow;
     [xi,yi] = convCoord(xi,yi,mesh.winFE,mesh.UFE);
     
     Jint.nout = [max(yo) min(yo); min(xo) max(xo)];
@@ -134,13 +141,15 @@ end
 Results = zeros(Nb_ct,2);
 fprintf('\nJ-Integrating...\n');
 for i=1:Nb_ct
-    Jint.nin(1,:)=Ctrs(i,1:2);
-    Jint.nin(2,:)=Ctrs(i,3:4);
-    Jint.nout(1,:)=Ctrs(i,5:6);
-    Jint.nout(2,:)=Ctrs(i,7:8);
+    Jint.nin(1,:)  = Ctrs(i,1:2);
+    Jint.nin(2,:)  = Ctrs(i,3:4);
+    Jint.nout(1,:) = Ctrs(i,5:6);
+    Jint.nout(2,:) = Ctrs(i,7:8);
     %         Jint.mask = [ymask(1) ymask(2);xmask(1) xmask(2)]; Jint.mask(Jint.mask<1)=1;
-    [Jint] = findJintelem(mat, mesh, el, Jint);  %finds elements within defined (Jint)ergral area, Jint.nout/nin
-    [Jint] = getq(el,Jint, mesh);       %creates smooth virtual crack extension function q over Jint.nout/nin
+    %finds elements within defined (Jint)ergral area, Jint.nout/nin
+    [Jint] = findJintelem(mat, mesh, el, Jint);  
+    %creates smooth virtual crack extension function q over Jint.nout/nin
+    [Jint] = getq(el,Jint, mesh);       
     [Jint] = Jcalc(el,Jint, mat);
     
     Results(i,1)=Jint.J.*1000000; % [J/mm^2] --> [J/m^2]
@@ -158,7 +167,8 @@ end
     fprintf(1,'Std Dev for J is %3f\n', Jdiv);
     fprintf(1,'Std Dev for K is %3f\n\n', 1E-6 * std(Results(:,2)));
     
-    fprintf(1,'\nMean K is %3.4f MPa sqrt(m) over last 50pc\n', 1E-6 * mean(Results(round(Nb_ct/2):end, 2)));
+    fprintf(1,'\nMean K is %3.4f MPa sqrt(m) over last 50pc\n', 1E-6 * ...
+        mean(Results(round(Nb_ct/2):end, 2)));
     Kdiv=1e-6 * std(Results(:,2));
     fprintf(1,'Std Dev for K is %3.4f MPa sqrt(m) over last 50pc\n', Kdiv);
     Jtrue=((mean(Results(:,1))+max(Results(:,1)))/2);
@@ -187,7 +197,8 @@ input.Save = fullfile(input.results,[ num2str(input.fillname) '.' ...
 saveas(gcf,input.Save); close all
 
 alldata = table(Results(:,1), Results(:,2),'VariableNames',{ 'J', 'K' } );
-input.Save = fullfile(input.results,[ num2str(input.fillname) '.' num2str(input.Trail_number) '_Result.mat']);
+input.Save = fullfile(input.results,[ num2str(input.fillname) '.' ...
+    num2str(input.Trail_number) '_Result.mat']);
 save(input.Save, 'alldata','Ktrue','Kdiv','Jtrue','Jdiv');
 
 fprintf('trial %d is done\n',input.Trail_number);
