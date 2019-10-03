@@ -13,14 +13,14 @@ function [NewTensorMap] = componentTensorTransform(OldTensorMap,a)
 
 NewTensorMap = cell(3,3);
 
-for i=1:3
+parfor i=1:3
     for j=1:3
-        [sizeX,sizeY] = size(OldTensorMap{i,j});
+        [sizeX,sizeY]     = size(OldTensorMap{i,j});
         NewTensorMap{i,j} = zeros(sizeX,sizeY);
     end
 end
 
-for i=1:3
+parfor i=1:3
     for j=1:3
         % Perform einstein summation for component {i,j} 
         for k = 1:3

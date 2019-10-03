@@ -1,4 +1,4 @@
-function plotFE(mesh,el,Jint,gl)
+function plotFE(mesh,el,Jint,gl,Dir)
 if mesh.Operation=='Dis'
 warning off
  %Figure 
@@ -8,9 +8,9 @@ warning off
  
  %plot strain contours
   colormap(jet)
-  hdisp = pcolor(gl.Uxdef,gl.Uydef,gl.dy,'Parent',axesFE);
+  hdisp = pcolor(gl.Uxdef*1000 ,gl.Uydef*1000 ,gl.dy,'Parent',axesFE);
            shading interp
-hcont = contour(gl.Uxdef,gl.Uydef,gl.dy,10,'LineWidth',1,'LineColor',...
+hcont = contour(gl.Uxdef*1000 ,gl.Uydef*1000 ,gl.dy,10,'LineWidth',1,'LineColor',...
     [0 0 0],'Parent',axesFE);
 %   hdisp = pcolor(gl.Uxdef,gl.Uydef,gl.smises,'Parent',axesFE);
 %           shading interp
@@ -44,14 +44,17 @@ hcont = contour(gl.Uxdef,gl.Uydef,gl.dy,10,'LineWidth',1,'LineColor',...
 %   end
   
  %Jintegral Elements 
-   hJint = fill([el.Ux(Jint.el,1)';el.Ux(Jint.el,2)';el.Ux(Jint.el,3)';el.Ux(Jint.el,4)';el.Ux(Jint.el,1)'], ...
-               [el.Uy(Jint.el,1)';el.Uy(Jint.el,2)';el.Uy(Jint.el,3)';el.Uy(Jint.el,4)';el.Uy(Jint.el,1)'], ... 
+   hJint = fill([el.Ux(Jint.el,1)'*1000 ;el.Ux(Jint.el,2)'*1000 ;...
+       el.Ux(Jint.el,3)'*1000 ;el.Ux(Jint.el,4)'*1000 ;...
+       el.Ux(Jint.el,1)'*1000 ],[el.Uy(Jint.el,1)'*1000 ;...
+       el.Uy(Jint.el,2)'*1000 ;el.Uy(Jint.el,3)'*1000 ;...
+       el.Uy(Jint.el,4)'*1000 ;el.Uy(Jint.el,1)'*1000 ], ... 
                 'k','EdgeColor','none','FaceAlpha',0.3);
   
  %Create xlabel
-  xlabel('Along Specimen Length (mm)');
+  xlabel('x-axis (mm)');
  %Create ylabel
-  ylabel('Along Specimen Width (mm)');
+  ylabel('y-axis (mm)');
  %Create title
   title('DIC displacment field showing FE elements and J integral elements');
  %Create legend
@@ -60,9 +63,11 @@ hcont = contour(gl.Uxdef,gl.Uydef,gl.dy,10,'LineWidth',1,'LineColor',...
  set(legend2,'Orientation','horizontal','Location','SouthOutside','Color',[0.5 0.5 0.5]);
  legend boxoff;
  %Create colorbar
-  colorbar('peer',axesFE);   
+  colorbar('peer',axesFE);  
+      c = colorbar;           c.Label.String = 'U_y Displacement [m]';%labelling
     
-  axis([min(min(el.Uxdef)) max(max(el.Uxdef)) min(min(el.Uydef)) max(max(el.Uydef))]);
+  axis([min(min(el.Uxdef))*1000  max(max(el.Uxdef))*1000 ...
+      min(min(el.Uydef))*1000  max(max(el.Uydef))*1000 ]);
   axis square;
 warning on
  
@@ -76,9 +81,9 @@ warning off
  
  %plot strain contours
   colormap(jet)
-  hdisp = pcolor(gl.Uxdef,gl.Uydef,gl.smises,'Parent',axesFE);
+  hdisp = pcolor(gl.Uxdef*1000 ,gl.Uydef*1000 ,gl.smises,'Parent',axesFE);
           shading interp
-  hcont = contour(gl.Uxdef,gl.Uydef,gl.smises,10,'LineWidth',1,'LineColor',...
+  hcont = contour(gl.Uxdef*1000 ,gl.Uydef*1000 ,gl.smises,10,'LineWidth',1,'LineColor',...
       [0 0 0],'Parent',axesFE);
   
 %  %FE elements and nodes 
@@ -101,16 +106,19 @@ warning off
 %   end
   
  %Jintegral Elements 
-hJint = fill([el.Ux(Jint.el,1)';el.Ux(Jint.el,2)';el.Ux(Jint.el,3)';el.Ux(Jint.el,4)';el.Ux(Jint.el,1)'], ...
-        [el.Uy(Jint.el,1)';el.Uy(Jint.el,2)';el.Uy(Jint.el,3)';el.Uy(Jint.el,4)';el.Uy(Jint.el,1)'], ... 
+hJint = fill([el.Ux(Jint.el,1)'*1000 ;el.Ux(Jint.el,2)'*1000 ;...
+    el.Ux(Jint.el,3)'*1000 ;el.Ux(Jint.el,4)'*1000 ...
+    ;el.Ux(Jint.el,1)'*1000 ],[el.Uy(Jint.el,1)'*1000 ;...
+    el.Uy(Jint.el,2)'*1000 ;el.Uy(Jint.el,3)'*1000 ;...
+    el.Uy(Jint.el,4)'*1000 ;el.Uy(Jint.el,1)'*1000 ], ... 
                 'k','EdgeColor','none','FaceAlpha',0.3);
   
  %Create xlabel
-  xlabel('along specimen length (mm)');
+  xlabel('x-axis(mm)');
  %Create ylabel
-  ylabel('along specimen width (mm)');
+  ylabel('y-axis (mm)');
  %Create title
-  title('DIC displacment field showing FE elements and J integral elements');
+  title('Von Misess Stress showing FE elements and J integral elements');
  %Create legend
  legend2 = legend(axesFE,[hdisp hJint(end)], ...
            'FE elements','J integral elements');
@@ -118,8 +126,10 @@ hJint = fill([el.Ux(Jint.el,1)';el.Ux(Jint.el,2)';el.Ux(Jint.el,3)';el.Ux(Jint.e
  legend boxoff;
  %Create colorbar
   colorbar('peer',axesFE);   
+      c = colorbar;           c.Label.String = 'Von Misess Stress [Pa]';%labelling
     
-  axis([min(min(el.Uxdef)) max(max(el.Uxdef)) min(min(el.Uydef)) max(max(el.Uydef))]);
+  axis([min(min(el.Uxdef))*1000  max(max(el.Uxdef)*1000 ) ...
+      min(min(el.Uydef))*1000  max(max(el.Uydef))*1000 ]);
   axis equal;
 warning on
 end

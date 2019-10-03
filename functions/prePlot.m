@@ -43,11 +43,11 @@ function DIC = prePlot(mesh,gl,y,Pla_reg,el)
  
   
  %Create xlabel
-  xlabel('along specimen length (mm)');
+  xlabel('along specimen length (m)');
  %Create ylabel
-  ylabel('along specimen width (mm)');
+  ylabel('along specimen width (m)');
  %Create title
-  title('DIC displacment field showing FE elements and J integral elements');
+  title('DIC Stain field showing FE elements and J integral elements');
  
  %Create colorbar
 colorbar('peer',axesDIC);   
@@ -56,3 +56,5 @@ set(gcf,'position',[500,100,1200,800])
   axis equal;
   colormap(jet)
   
+axis([min(mesh.UDIC(1,:)) max(mesh.UDIC(1,:)) min(mesh.UDIC(2,:)) max(mesh.UDIC(2,:))]);
+

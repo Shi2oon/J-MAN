@@ -11,13 +11,14 @@ figure
 % S23 = Maps.S23_F;
 % S33 = Maps.S33_F;
 
-S11 = Maps.crop.S{1,1};
-S12 = Maps.crop.S{1,2};
-S13 = Maps.crop.S{1,3};
-S22 = Maps.crop.S{2,2};
-S23 = Maps.crop.S{2,3};
-S33 = Maps.crop.S{3,3};
-W = Maps.crop.W;
+S11  = Maps.crop.S{1,1};
+S12  = Maps.crop.S{1,2};
+S13  = Maps.crop.S{1,3};
+S22  = Maps.crop.S{2,2};
+S23  = Maps.crop.S{2,3};
+S33  = Maps.crop.S{3,3};
+W    = Maps.crop.W;
+GNDs = Maps.crop.GNDs;
 
 % Remove extreme values from plot
 factor = 10;
@@ -91,14 +92,25 @@ ylim([min(Yvec) max(Yvec)])
 colorbar
 title('\fontsize{16}\sigma\fontsize{10}33') %should be close to zero
 
-h7 = subplot(3,3,7);
+h7 = subplot(3,3,4);
 imagesc(Xvec,Yvec,W)
 set(gca,'Ydir','normal');
 axis equal
 xlim([min(Xvec) max(Xvec)])
 ylim([min(Yvec) max(Yvec)])
 colorbar
-title('W31')
+title('W')
+
+h8 = subplot(3,3,7);
+imagesc(Xvec,Yvec,GNDs); 
+set(gca,'Ydir','normal');
+axis equal
+xlim([min(Xvec) max(Xvec)])
+ylim([min(Yvec) max(Yvec)])
+colormap(jet(256));                 set(gcf,'position',[500,100,950,700]);
+set(gca,'ColorScale','log');        set(gca,'CLim',[10^13 10^15.5]);    
+c = colorbar;                       c.Label.String    = 'log';%labelling
+title('GNDs')
 
 set(gcf,'position',[800,80,1000,900])
 

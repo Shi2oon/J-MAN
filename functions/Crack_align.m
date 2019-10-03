@@ -22,7 +22,7 @@ if mesh.Operation=='Str'
     mesh.straindata(:,5) = -mesh.straindata(:,5);
 end
     
-    [el,mesh] = meshDIC(mat,mesh);
+    [el,mesh] = meshDIC(mesh);
     [el] = FEanalysisStrains(el,mat,mesh);
     [gl] = makeglobal(el, mesh);
 end

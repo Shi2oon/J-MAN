@@ -18,11 +18,14 @@ str = ['Select crop boundary (',V.type,'_',num2str(V.i),'_',num2str(V.j),'^n^e^w
 title(str)
 xlabel(['x-position [',V.unit,']']);
 ylabel(['y-position [',V.unit,']']);
-plot(lineX,lineY,'color','y')
+plot(lineX,lineY,'color','k')
+set(gca,'CLim',[min(min(Z)) max(max(Z))*5/8]);
 hold off
 colormap jet
 
 set(fig,'Name','Crop required data','NumberTitle','off');
+pos = get(gcf,'position');          set(gcf,'position',[100 100 pos(3:4)*2]) 
+
 [Xcrop,Ycrop] = ginput(2);
 Xcrop = [min(Xcrop);max(Xcrop)];
 Ycrop = [min(Ycrop);max(Ycrop)];
@@ -30,4 +33,17 @@ hold on
 plot([Xcrop(1) Xcrop(2) Xcrop(2) Xcrop(1) Xcrop(1)],...
     [Ycrop(1) Ycrop(1) Ycrop(2) Ycrop(2) Ycrop(1)],'color','r')
 hold off
-set(fig,'Name','Cropped region shown in red','NumberTitle','off');
+set(fig,'Name','Cropped region','NumberTitle','off');
+title('Cropped region shown in red');
+
+%% placeing the crack at the middle
+if abs(mean(lineY)-Ycrop(1)) ~= abs(mean(lineY)-Ycrop(2))
+    addi  = (abs(mean(lineY)-Ycrop(1))+abs(mean(lineY)-Ycrop(2)))/2;
+    Ycrop = [mean(lineY)-addi, mean(lineY)+addi];
+end
+
+hold on
+plot([Xcrop(1) Xcrop(2) Xcrop(2) Xcrop(1) Xcrop(1)],...
+    [Ycrop(1) Ycrop(1) Ycrop(2) Ycrop(2) Ycrop(1)],'color','k')
+hold off
+title('Crack Centered-Cropped region shown in black');

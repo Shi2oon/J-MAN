@@ -53,16 +53,16 @@ for elnum = 1:size(el.n,1)
     el.gpexx(elnum)   = egp(1);
     el.gpeyy(elnum)   = egp(2);
     el.gpexy(elnum)   = egp(3);
-    el.gpemax(elnum,1)  = 1/2*(egp(1)+egp(2))+(1/2*(egp(1)+egp(2))^2+egp(3)^2)^(1/2);
-    el.gpemin(elnum,1)  = 1/2*(egp(1)+egp(2))-(1/2*(egp(1)+egp(2))^2+egp(3)^2)^(1/2);    
+    el.gpemax(elnum,1)= 1/2*(egp(1)+egp(2))+(1/2*(egp(1)+egp(2))^2+egp(3)^2)^(1/2);
+    el.gpemin(elnum,1)= 1/2*(egp(1)+egp(2))-(1/2*(egp(1)+egp(2))^2+egp(3)^2)^(1/2);    
 
     el.gpsxx(elnum)   = sgp(1);
     el.gpsyy(elnum)   = sgp(2);
     el.gpsxy(elnum)   = sgp(3);
     
     strpt = roundn([sum(unique(el.Ux(elnum,:)))/2 sum(unique(el.Uy(elnum,:)))/2],-6);
-    el.gpx(elnum,:)     = strpt(1);
-    el.gpy(elnum,:)     = strpt(2);
+    el.gpx(elnum,:)   = strpt(1);
+    el.gpy(elnum,:)   = strpt(2);
     
     if strcmp(mat.stressstate,'plane_strain')
         el.gpszz(elnum) = mat.nu *(el.gpsxx(elnum) + el.gpsyy(elnum));

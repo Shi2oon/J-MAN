@@ -30,13 +30,12 @@ for elnum = 1:size(Jint.n,1)
     
     %dx is [Exx dUy/dx]    
     dx = (dHxy(1,:)*[de(1:2:end);de(2:2:end)]')';
-    
+
     if mesh.Operation == 'Str'; dx = [Jint.gpexx(elnum) dx(2)]; end
     
     %dq/dy and dq/dx
     dq = roundn(dHxy*Jint.nQ(elnum,:)',-3);
     dq=flipud(dq);
-    
     Jint.dq(elnum,:)=dq;
     
     %calculate Jint
@@ -48,7 +47,6 @@ for elnum = 1:size(Jint.n,1)
         disp 'Error';
         return
     end
-    
     Jint.gp(elnum) = Jtest;
 end
 Jint.J = (sum(Jint.gp));
@@ -58,4 +56,3 @@ if strcmp(mat.stressstate,'plane_stress')
 else
     Jint.K = sqrt(abs(Jint.J)*mat.E)/sqrt((1-mat.nu^2));
 end
-

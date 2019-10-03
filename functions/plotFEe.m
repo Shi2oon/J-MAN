@@ -1,4 +1,4 @@
-function plotFEe(mesh,el,gl)
+function plotFEe(mesh,el,gl,Dir)
 if mesh.Operation=='Dis'
 warning off
  %Figure 
@@ -8,7 +8,7 @@ warning off
  
  %plot strain contours
   colormap(jet)
-hdisp = pcolor(gl.Uxdef,gl.Uydef,gl.dy,'Parent',axesFE);
+hdisp = pcolor(gl.Uxdef*1000 ,gl.Uydef*1000 ,gl.dy,'Parent',axesFE);
            shading interp
 % hcont = contour(gl.Uxdef,gl.Uydef,gl.dy,10,'LineWidth',1,'LineColor',...
 %     [0 0 0],'Parent',axesFE);
@@ -36,16 +36,17 @@ hdisp = pcolor(gl.Uxdef,gl.Uydef,gl.dy,'Parent',axesFE);
 
   
  %Create xlabel
- %Create xlabel
-  xlabel('Along Specimen Length (mm)');
+  xlabel('x-axis (mm)');
  %Create ylabel
-  ylabel('Along Specimen Width (mm)');
+  ylabel('y-axis (mm)');
  %Create title
   title('Displacement Field (U_y) showing FE elements');
  %Create colorbar
   colorbar('peer',axesFE);   
+        c = colorbar;           c.Label.String = 'U_y Displacement [m]';%labelling
     
-  axis([min(min(el.Uxdef)) max(max(el.Uxdef)) min(min(el.Uydef)) max(max(el.Uydef))]);
+  axis([min(min(el.Uxdef))*1000  max(max(el.Uxdef))*1000 ...
+      min(min(el.Uydef))*1000  max(max(el.Uydef))*1000 ]);
 warning on
 elseif mesh.Operation =='Str'
     warning off
@@ -59,7 +60,7 @@ elseif mesh.Operation =='Str'
 %   imagesc(gl.dy)
   hdisp = pcolor(gl.Uxdef*1000,gl.Uydef*1000,gl.dy,'Parent',axesFE);
           shading interp
-  hcont = contour(gl.Uxdef*1000,gl.Uydef*1000,gl.dy,10,'LineWidth',1,'LineColor',...
+  hcont = contour(gl.Uxdef*1000 ,gl.Uydef*1000 ,gl.dy,10,'LineWidth',1,'LineColor',...
       [0 0 0],'Parent',axesFE);
   
 %  %FE elements and nodes 
@@ -85,16 +86,17 @@ elseif mesh.Operation =='Str'
 
   
  %Create xlabel
-  xlabel('Along Specimen Length (mm)');
+  xlabel('x-axis (mm)');
  %Create ylabel
-  ylabel('Along Specimen Width (mm)');
+  ylabel('y-axis (mm)');
  %Create title
   title('Displacement Field (U_y) showing FE elements');
+        c = colorbar;           c.Label.String = 'U_y Displacement [m]';%labelling
  %Create colorbar
   colorbar('peer',axesFE);   
     
-  axis([min(min(el.Uxdef*1000)) max(max(el.Uxdef*1000)) ...
-      min(min(el.Uydef*1000)) max(max(el.Uydef*1000))]);
+  axis([min(min(el.Uxdef*1000 )) max(max(el.Uxdef*1000 )) ...
+      min(min(el.Uydef*1000 )) max(max(el.Uydef*1000 ))]);
 warning on
 end
  

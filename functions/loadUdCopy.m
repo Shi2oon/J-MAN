@@ -1,10 +1,10 @@
-function [mesh] = loadUdCopy(alldata,Operation)
+function [mesh] = loadUdCopy(alldata,Operation,mat)
 mesh.Operation=Operation;
-mesh.operation='West';
+mesh.operation='West'; %for correction data
 
 if mesh.Operation=='Dis'
-dispsU_1 = alldata(:,1:2);
-dispsd_1 = alldata(:,3:4);
+dispsU_1 = alldata(:,1:2)*mat.input_unit;
+dispsd_1 = alldata(:,3:4)*mat.input_unit;
 tmp(1:2,:)=dispsU_1';
 tmp(3:4,:)=dispsd_1';
 %Guess the dimensions of the image
@@ -19,7 +19,7 @@ mesh.winFE  = [2 2; mesh.winDIC(1)-1 mesh.winDIC(2)-1];
 %% Prepare strain field data
 elseif mesh.Operation=='Str'
 alldata(isnan(alldata))=0;
-dispsU_1 = alldata(:,1:2);
+dispsU_1 = alldata(:,1:2)*mat.input_unit;
 
 straindata = alldata(:,3:end);
 

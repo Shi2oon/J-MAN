@@ -47,9 +47,9 @@ text(mesh.UDIC(1,(mesh.winDIC(2)+1):mesh.winDIC(2):end),mesh.UDIC(2,(mesh.winDIC
 
 
 %Create xlabel
-xlabel('along specimen length (mm)');
+xlabel('along specimen length (m)');
 %Create ylabel
-ylabel('along specimen width (mm)');
+ylabel('along specimen width (m)');
 %Create title
 % title('\sigma_{VM} showing FE elements and J integral elements');
 title('u_y showing FE elements and J integral elements');
@@ -59,6 +59,5 @@ title('u_y showing FE elements and J integral elements');
 colorbar('peer',axesDIC);
 
 axis([min(mesh.UDIC(1,:)) max(mesh.UDIC(1,:)) min(mesh.UDIC(2,:)) max(mesh.UDIC(2,:))]);
-axis square;
 colormap(jet)
 

@@ -74,7 +74,8 @@ if ~strcmpi(centre,'norot')
     rank_xip = rank(xip');
 
     if rank_xi0 ~= 2 || rank_xip ~= 2
-        disp(['##ERROR:xi0 or xip rank deficient. rank_xi0 = ' num2str(rank_xi0) ', rank_xip = ' num2str(rank_xip)]); ERROR
+        disp(['##ERROR:xi0 or xip rank deficient. rank_xi0 = ' ...
+            num2str(rank_xi0) ', rank_xip = ' num2str(rank_xip)]); ERROR
     end
 
     R = xi0\xip;  % backslash is MATLAB matrix division - solves for rotation efficiently
@@ -93,7 +94,8 @@ if ~strcmpi(centre,'norot')
     %% 4.2.2 Refine estimate of Euler angles and Rot matrix
     disp '>>Solver details (refining theta):'
     disp '***********'
-    options2 = optimoptions('lsqnonlin','MaxFunEval',1E9,'MaxIter',1E12,'TolFun',1e-10,'Display','none'); %'Algorithm','sqp'
+    options2 = optimoptions('lsqnonlin','MaxFunEval',1E9,'MaxIter',1E12,'TolFun',...
+        1e-10,'Display','none'); %'Algorithm','sqp'
     thetaSolver2D = @(theta) ([cos(theta) sin(theta);-sin(theta) cos(theta)] - R);
     [theta,resnorm] = lsqnonlin(thetaSolver2D,theta,-2*pi, 2*pi,options2);%theta);
     disp '***********'
@@ -131,7 +133,7 @@ if ~strcmpi(centre,'norot')
     
 else
     new_data = cdata;
-    theta = nan;
+    theta    = nan;
     rotCentre = nan(1,2);
     disp ' '
 %     disp(['RBD /pixel = ' num2str(RBD,6)])
