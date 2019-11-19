@@ -5,5 +5,5 @@ if mesh.Operation =='Str'
     [el,mesh] = FEintegrateStrains(el,mat,mesh,Jint);
     [el,mesh] = RotRemoval('true',mesh,el);
     [gl]      = makeglobal(el, mesh);
-    figure;    surf(gl.dy);    view([0 90]);   colormap(jet);
+    H2        =  figure;    surf(gl.dy);    view([3 42]);   colormap(jet);
 end

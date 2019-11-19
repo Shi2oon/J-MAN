@@ -57,7 +57,7 @@ title({'u_y showing FE elements and J integral elements';''});
 
 %Create colorbar
 colorbar('peer',axesDIC);
-axis tight; axis equal;
+
 axis([min(mesh.UDIC(1,:)) max(mesh.UDIC(1,:)) min(mesh.UDIC(2,:)) max(mesh.UDIC(2,:))]);
 colormap(jet)
 

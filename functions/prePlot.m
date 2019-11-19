@@ -58,7 +58,7 @@ function DIC = prePlot(mesh,gl,y,Pla_reg,el)
 colorbar('peer',axesDIC);   
 set(gcf,'position',[500,100,1200,800])
  % axis([min(mesh.UDIC(1,:)) max(mesh.UDIC(1,:)) min(mesh.UDIC(2,:)) max(mesh.UDIC(2,:))]);
-  axis tight; axis equal;
+  axis equal;
   colormap(jet)
 axis([min(mesh.UDIC(1,:)) max(mesh.UDIC(1,:)) min(mesh.UDIC(2,:)) max(mesh.UDIC(2,:))]);
 

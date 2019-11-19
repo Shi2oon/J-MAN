@@ -1,4 +1,4 @@
-function [Jint] = Jcalc(~,Jint, mat,mesh)
+function [Jint] = Jcalc(el,Jint, mat,mesh)
 %% J-integral calculation
 [gaussloc,gaussweight] = gaussquad(mat);
 Jint.gp=zeros([length(Jint.n) 1]);

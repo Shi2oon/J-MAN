@@ -3,8 +3,13 @@ mesh.Operation     = Operation;
 mesh.operation     = 'Norm'; % for origiinal data and ''West' for correction data
 if mesh.Operation == 'xED'
     %% HR-EBSD data
-    [alldata,input]   = LoadEBSD(input); % E strain  S stress  A Deformation 
-    mesh.GNDs         = input.GND;      % GNDs: explore later
+    [EBSDdata,input]  = LoadEBSD(input); % E strain  S stress  A Deformation 
+% [x y GNDs A11 A12 A13 A21 A22 A23 A31 A32 A33 S11 S12 S13 S22 S23  
+%   E11 E12 E13 E22 E23 E33 W12 W13 W21 W23 W31 W32]
+    alldata           = [EBSDdata(:,1:2) EBSDdata(:,19) EBSDdata(:,20) EBSDdata(:,22)...
+                         EBSDdata(:,13) EBSDdata(:,14) EBSDdata(:,16)];
+    mesh.GNDs         = EBSDdata(:,3);      % GNDs: explore later
+    mesh.dispgraddata = EBSDdata(:,4:12);   % Displacement gradient
     mesh.OpS          = 'xED';
     mesh.Operation    = 'Str';
     input_unit        = input.xy_input_unit ;
@@ -74,38 +79,38 @@ switch input_unit
 end
 input.input_unit    = 'm';
 input.stressstat    = 'plane_strain';
+
 alldata(isnan(alldata))=0;
 dispsU_1   = alldata(:,1:2);
+straindata = alldata(:,3:5);
 
 %% Interpolate strain data on a regular grid.
-straindata = [alldata(:,1:2) alldata(:,3:5)]; %exx eyy exy
-% straindata = alldata(:,3:5); %exx eyy exy
 str_limits = [min(dispsU_1);max(dispsU_1)];
 nbpts      = [length(unique(dispsU_1(:,1))) length(unique(dispsU_1(:,2)))];
 pas        = (str_limits(2,:)-str_limits(1,:))./nbpts;
 xrdXq      = str_limits(1,1):pas(1):str_limits(2,1);
 xrdYq      = str_limits(1,2):pas(2):str_limits(2,2);
-% [Xq, Yq]   = meshgrid(xrdXq,xrdYq);
-% 
-% Fxx = scatteredInterpolant(dispsU_1(:,1), dispsU_1(:,2), straindata(:,1));
-% Fyy = scatteredInterpolant(dispsU_1(:,1), dispsU_1(:,2), straindata(:,2));
-% Fxy = scatteredInterpolant(dispsU_1(:,1), dispsU_1(:,2), straindata(:,3));
-% intpExx = Fxx(Xq,Yq); 
-% intpEyy = Fyy(Xq,Yq); 
-% intpExy = Fxy(Xq,Yq);
-% straindata = [Xq(:) Yq(:) intpExx(:) intpEyy(:) -1.*intpExy(:)];
+[Xq, Yq]   = meshgrid(xrdXq,xrdYq);
+
+Fxx = scatteredInterpolant(dispsU_1(:,1), dispsU_1(:,2), straindata(:,1));
+Fyy = scatteredInterpolant(dispsU_1(:,1), dispsU_1(:,2), straindata(:,2));
+Fxy = scatteredInterpolant(dispsU_1(:,1), dispsU_1(:,2), straindata(:,3));
+intpExx = Fxx(Xq,Yq); 
+intpEyy = Fyy(Xq,Yq); 
+intpExy = Fxy(Xq,Yq);
+straindata = [Xq(:) Yq(:) intpExx(:) intpEyy(:) -1.*intpExy(:)];
 
 %% for HR-EBSD Data to injetc stress data 
     if  any(ismember(fields(mesh),'OpS'))==1
         if sum(strfind(mesh.OpS,'xED'))~=0
-        stressdata = [alldata(:,1:2) alldata(:,6:end)];
-%         Fxx = scatteredInterpolant(dispsU_1(:,1), dispsU_1(:,2), stressdata(:,1));
-%         Fyy = scatteredInterpolant(dispsU_1(:,1), dispsU_1(:,2), stressdata(:,2));
-%         Fxy = scatteredInterpolant(dispsU_1(:,1), dispsU_1(:,2), stressdata(:,3));
-%         intpSxx = Fxx(Xq,Yq); 
-%         intpSyy = Fyy(Xq,Yq); 
-%         intpSxy = Fxy(Xq,Yq);
-%         stressdata = [Xq(:) Yq(:) intpSxx(:) intpSyy(:) -1.*intpSxy(:)];
+        stressdata = alldata(:,6:end);
+        Fxx = scatteredInterpolant(dispsU_1(:,1), dispsU_1(:,2), stressdata(:,1));
+        Fyy = scatteredInterpolant(dispsU_1(:,1), dispsU_1(:,2), stressdata(:,2));
+        Fxy = scatteredInterpolant(dispsU_1(:,1), dispsU_1(:,2), stressdata(:,3));
+        intpExx = Fxx(Xq,Yq); 
+        intpEyy = Fyy(Xq,Yq); 
+        intpExy = Fxy(Xq,Yq);
+        stressdata = [Xq(:) Yq(:) intpExx(:) intpEyy(:) -1.*intpExy(:)];
         input.stressstat  = 'plane_stress';
         input.xy_input_unit = input.input_unit;
         mesh.stressdata = stressdata;
