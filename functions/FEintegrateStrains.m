@@ -1,4 +1,4 @@
-function [el,mesh] = FEintegrateStrains(el,mat,mesh,Jint)
+function [el,mesh] = FEintegrateStrains(el,mesh)
 
 %%  CHEAT TEST VERSION
 % disp 'Attention Integration cheat test version'
@@ -19,7 +19,7 @@ function [el,mesh] = FEintegrateStrains(el,mat,mesh,Jint)
 % Mmat = zeros(length(el.n)*3,length(unique(el.n(:)))*2);
 % Bvec = zeros(length(el.n)*3,1);
 % Xvec = zeros(length(unique(el.n(:)))*2,1);
-elemselection.n = el.n(Jint.unmasked,:);
+elemselection.n = el.n;
 Mmat = zeros(length(elemselection.n)*3,length(unique(elemselection.n(:)))*2);
 Bvec = zeros(length(elemselection.n)*3,1);
 Xvec = zeros(length(unique(elemselection.n(:)))*2,1);

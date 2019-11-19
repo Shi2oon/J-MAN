@@ -36,13 +36,14 @@ for i=1:length(elnFE)
     end
 end
 
-usf_nod  = unique(el.n(:)); usf_nod(usf_nod==0) = [];
+usf_nod  = unique(el.n(:));                     
+usf_nod(usf_nod==0) = [];
 mesh.UFE = mesh.UDIC(:,usf_nod);
 mesh.dFE = mesh.dDIC(:,usf_nod);
 
 % Remove 0 disp elements
-msk = ~sum(el.n,2)==0;
-el.n = el.n(msk,:);
+msk   = ~sum(el.n,2)==0;
+el.n  = el.n(msk,:);
 el.Ux = el.Ux(msk,:);
 el.Uy = el.Uy(msk,:);
 el.dx = el.dx(msk,:);
