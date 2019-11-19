@@ -60,7 +60,7 @@ function plotDIC(mesh,el,mat,Jint)
  %Create ylabel
   ylabel('along specimen width (mm)');
  %Create title
-  title('DIC displacment field showing FE elements and J integral elements');
+  title({'DIC displacment field showing FE elements and J integral elements';''});
  %Create legend
   legend1 = legend(axesDIC,[hgrid hFEel(1) hquiv hJint(1)], ...
             'DIC data grid','FE elements','FE nodal displacments','J integral elements');

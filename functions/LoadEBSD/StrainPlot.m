@@ -40,49 +40,49 @@ Yvec = Maps.crop.Y(:,1);
 figh = figure(1);colormap jet
 
 h1 = subplot(3,3,1);            imagesc(Xvec,Yvec,E11)
-set(gca,'Ydir','normal');       axis equal
+set(gca,'Ydir','normal');       axis equal;     axis tight
 xlim([min(Xvec) max(Xvec)]);    ylim([min(Yvec) max(Yvec)])
 colorbar;                       caxis([Miniall Maxiall]); 
 title('\fontsize{16}\epsilon\fontsize{10}11')
 
 h2 = subplot(3,3,2);            imagesc(Xvec,Yvec,E12)
-set(gca,'Ydir','normal');       axis equal
+set(gca,'Ydir','normal');       axis equal;     axis tight
 xlim([min(Xvec) max(Xvec)]);    ylim([min(Yvec) max(Yvec)])
 colorbar;                       caxis([Miniall Maxiall]); 
 title('\fontsize{16}\epsilon\fontsize{10}12')
 
 h3 = subplot(3,3,3);            imagesc(Xvec,Yvec,E13)
-set(gca,'Ydir','normal');       axis equal
+set(gca,'Ydir','normal');       axis equal;     axis tight
 xlim([min(Xvec) max(Xvec)]);    ylim([min(Yvec) max(Yvec)])
 colorbar;                       caxis([Miniall Maxiall]); 
 title('\fontsize{16}\epsilon\fontsize{10}13')
 
 h4 = subplot(3,3,5);            imagesc(Xvec,Yvec,E22)
-set(gca,'Ydir','normal');       axis equal
+set(gca,'Ydir','normal');       axis equal;     axis tight
 xlim([min(Xvec) max(Xvec)]);    ylim([min(Yvec) max(Yvec)])
 colorbar;                       caxis([Miniall Maxiall]); 
 title('\fontsize{16}\epsilon\fontsize{10}22')
 
 h5 = subplot(3,3,6);            imagesc(Xvec,Yvec,E23)
-set(gca,'Ydir','normal');       axis equal
+set(gca,'Ydir','normal');       axis equal;     axis tight
 xlim([min(Xvec) max(Xvec)]);    ylim([min(Yvec) max(Yvec)])
 colorbar;                       caxis([Miniall Maxiall]); 
 title('\fontsize{16}\epsilon\fontsize{10}23')
 
 h6 = subplot(3,3,9);            imagesc(Xvec,Yvec,E33)
-set(gca,'Ydir','normal');       axis equal
+set(gca,'Ydir','normal');       axis equal;     axis tight
 xlim([min(Xvec) max(Xvec)]); 	ylim([min(Yvec) max(Yvec)])
 xlabel('x[\mum]');          	ylabel('y[\mum]');
 colorbar;                    	caxis([Miniall Maxiall]); 
 title('\fontsize{16}\epsilon\fontsize{10}33') %should be close to zero
 
 h7 = subplot(3,3,4);            imagesc(Xvec,Yvec,Wo)
-set(gca,'Ydir','normal');       axis equal
+set(gca,'Ydir','normal');       axis equal;     axis tight
 xlim([min(Xvec) max(Xvec)]);    ylim([min(Yvec) max(Yvec)])
 colorbar;                       title('W')
 
 h8 = subplot(3,3,7);            imagesc(Xvec,Yvec,GNDs); 
-set(gca,'Ydir','normal');       axis equal
+set(gca,'Ydir','normal');       axis equal;     axis tight
 xlim([min(Xvec) max(Xvec)]);    ylim([min(Yvec) max(Yvec)])
 colormap(jet(256));            	%set(gcf,'position',[500,100,950,700]);
 set(gca,'ColorScale','log');  	set(gca,'CLim',[10^13 10^15.5]);    

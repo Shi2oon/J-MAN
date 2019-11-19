@@ -1,5 +1,10 @@
-function [Results,error] =WestergaardCorrection (Results,mat,operation,maxGrid,elements)
-Ktrue=1E-6.*((mean(Results(:,2))+max(Results(:,2)))/2);
+function [Results,ER] =WestergaardCorrection (Results,mat,operation,maxGrid,elements)
+if length(Results) == 1
+    Ktrue = Results;
+else
+    contrs = length(Results);           contrs = contrs - round(contrs/5);
+    Ktrue = 1E-6.*((mean(Results(contrs:end,2))+max(Results(contrs:end,2)))/2);
+end
 
 %if operation == 'Dis'
 xvec = linspace(-maxGrid,maxGrid,elements); % [m]
@@ -31,12 +36,21 @@ exy = 0.5*(dux_dy + duy_dx);
 if operation == 'Dis'
     alldata = [x(:) y(:) ux(:) uy(:)]; % [m]   
 elseif operation=='Str'
-    alldata = [x(:) y(:) exx(:) eyy(:) exy(:)]; % [m]    
+    alldata = [x(:) y(:) exx(:) eyy(:) exy(:)]; % [m]   
 else
     fprintf('You need to specify the calculation mode\nDis (for Displacement) or Str (for Strain)')
 end
 
 [KJ_MAN] = Westegraard_JMAN(mat,alldata,maxGrid,operation);
-
-clc;    error=Ktrue/KJ_MAN;
-        Results(:,3:4)=Results*error;
+ER = abs(1-Ktrue/KJ_MAN)/2;    
+% load('Holy_Correction_Factors.mat');
+% ER = CF.Str;
+clc; 
+if ER > 0.15  
+    ER = abs(ER-1.52);      % a systemmatic error in correction ofr starin, source :: unknown
+end
+if length(Results) == 1
+   Results = KJ_MAN;
+else  
+    Results(:,3:4) = Results+Results.*ER;
+end

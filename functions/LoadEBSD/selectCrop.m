@@ -8,7 +8,13 @@ Xvec = X(1,:);
 Yvec = Y(:,1);
 fig = figure;
 hold on
-imagesc(Xvec,Yvec,Z)
+if V.type ~= 'G'
+    imagesc(Xvec,Yvec,Z)
+    set(gca,'CLim',[min(min(Z)) max(max(Z))*5/8]);colormap jet
+else
+    imagesc(Xvec,Yvec,log10(Z))
+    colormap(jet(256));                 set(gca,'CLim',[13 15.5]); 
+end
 set(gca,'YDir','normal')
 axis equal
 xlim([min(Xvec) max(Xvec)])
@@ -19,10 +25,8 @@ title(str)
 xlabel(['x-position [',V.unit,']']);
 ylabel(['y-position [',V.unit,']']);
 plot(lineX,lineY,'color','k')
-set(gca,'CLim',[min(min(Z)) max(max(Z))*5/8]);
-hold off
-colormap jet
 
+hold off
 set(fig,'Name','Crop required data','NumberTitle','off');
 pos = get(gcf,'position');          set(gcf,'position',[100 100 pos(3:4)*2]) 
 

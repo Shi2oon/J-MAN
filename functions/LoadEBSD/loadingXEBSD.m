@@ -1,46 +1,80 @@
-function [Values] = loadingXEBSD(DirxEBSD)
+function [Va] = loadingXEBSD(DirxEBSD)
+warning off
 load(DirxEBSD,'Maps','GND','iPut','Data','C_rotated');      	
 
-if      exist('iPut') == 1 ||     exist('C_rotated') == 1       
-    Values.GND     = GND.total;   % from xEBSD  
+if      exist('iPut') == 1 ||     exist('C_rotated') == 1     	
+
+    if  exist('GND') == 0 
+        fname = erase(DirxEBSD, '_XEBSD.mat');
+        load([erase(fname,'.ctf') '.mat'],'GND');   
+        Values.GND = GND.total; 
+    end
+    Va.GND     = GND.total;   % from xEBSD  
     % rotation
-    Values.W11 = Maps.W11_F1;   Values.W12 = Maps.W12_F1;	Values.W13 = Maps.W13_F1;           
-    Values.W21 = Maps.W21_F1;   Values.W22 = Maps.W22_F1;	Values.W23 = Maps.W23_F1;    
-    Values.W31 = Maps.W31_F1;  	Values.W32 = Maps.W32_F1;   Values.W33 = Maps.W33_F1;  
+        Va.W11 = Maps.W11_F1;   Va.W12 = Maps.W12_F1;	Va.W13 = Maps.W13_F1;           
+        Va.W21 = Maps.W21_F1;   Va.W22 = Maps.W22_F1;	Va.W23 = Maps.W23_F1;    
+        Va.W31 = Maps.W31_F1;  	Va.W32 = Maps.W32_F1;   Va.W33 = Maps.W33_F1;  
 
     if     exist('C_rotated') == 0  % old version of xEBSD
         % stress
-        Values.S11 = Maps.S11_F;	Values.S12 = Maps.S12_F;    Values.S13 = Maps.S13_F;         	
-        Values.S22 = Maps.S22_F;    Values.S23 = Maps.S23_F;   	Values.S33 = Maps.S33_F;  
+        Va.S11 = Maps.S11_F;	Va.S12 = Maps.S12_F;    Va.S13 = Maps.S13_F; 
+       	Va.S21 = Maps.S12_F;	Va.S22 = Maps.S22_F;    Va.S23 = Maps.S23_F;  
+        Va.S31 = Maps.S13_F;	Va.S32 = Maps.S23_F;    Va.S33 = Maps.S33_F;  
         %strain
-        Values.E11 = Maps.S11_F; 	Values.E12 = Maps.S12_F;    Values.E13 = Maps.S13_F;          	
-        Values.E22 = Maps.S22_F;    Values.E23 = Maps.S23_F;  	Values.E33 = Maps.S33_F;
+        Va.E11 = Maps.E11_F;	Va.E12 = Maps.S12_F;    Va.E13 = Maps.E13_F; 
+       	Va.E21 = Maps.E12_F;	Va.E22 = Maps.S22_F;    Va.E23 = Maps.E23_F;  
+        Va.E31 = Maps.E13_F;	Va.E32 = Maps.S23_F;    Va.E33 = Maps.E33_F; 
+        % displacement gradient tensor
+        Va.A11 = Va.E11+Va.W11; Va.A12 = Va.E12+Va.W12; Va.A13 = Va.E13+Va.W13;
+        Va.A21 = Va.E21+Va.W21; Va.A22 = Va.E22+Va.W22; Va.A23 = Va.E23+Va.W23;
+        Va.A31 = Va.E31+Va.W31; Va.A32 = Va.E32+Va.W32; Va.A33 = Va.E33+Va.W33;
         %
-        Values.Stiffness  = iPut.stiffnessvalues;
-        Values.X   = Data.X;        Values.Y   = Data.Y;
+        Va.Stiffness  = iPut.stiffnessvalues;
+        Va.X   = Data.X;        Va.Y   = Data.Y;
     
-    elseif exist('C_rotated') == 1 %NEW xEBSD version
-        load(DirxEBSD,'Map_stress_sample','Map_strain_sample');
+    elseif exist('C_rotated') == 1 % NEW xEBSD version
+        load(DirxEBSD,'Map_stress_sample','Map_strain_sample','C_rotated','Map_A0_sample');
+        % displacement gradient tensor
+Va.A11 = Map_A0_sample(:,:,1,1);        Va.A12 = Map_A0_sample(:,:,1,2);        Va.A13 = Map_A0_sample(:,:,1,3);
+Va.A21 = Map_A0_sample(:,:,2,1);        Va.A22 = Map_A0_sample(:,:,2,2);        Va.A23 = Map_A0_sample(:,:,2,3);
+Va.A31 = Map_A0_sample(:,:,3,1);        Va.A32 = Map_A0_sample(:,:,3,2);        Va.A33 = Map_A0_sample(:,:,3,3);
         % stress
-        Values.S11 = Map_stress_sample(:,:,1,1);    Values.S12 = Map_stress_sample(:,:,1,2);
-        Values.S13 = Map_stress_sample(:,:,1,3);    Values.S22 = Map_stress_sample(:,:,2,2);
-        Values.S23 = Map_stress_sample(:,:,2,3);    Values.S33 = Map_stress_sample(:,:,3,3);
+Va.S11 = Map_stress_sample(:,:,1,1);    Va.S12 = Map_stress_sample(:,:,1,2);    Va.S13 = Map_stress_sample(:,:,1,3);    
+Va.S21 = Map_stress_sample(:,:,2,1);    Va.S22 = Map_stress_sample(:,:,2,2);    Va.S23 = Map_stress_sample(:,:,2,3);    
+Va.S31 = Map_stress_sample(:,:,3,1);    Va.S32 = Map_stress_sample(:,:,3,2);    Va.S33 = Map_stress_sample(:,:,3,3);    
+
         % strain
-        Values.E11 = Map_strain_sample(:,:,1,1);    Values.E12 = Map_strain_sample(:,:,1,2);
-        Values.E13 = Map_strain_sample(:,:,1,3);    Values.E22 = Map_strain_sample(:,:,2,2);
-        Values.E23 = Map_strain_sample(:,:,2,3);    Values.E33 = Map_strain_sample(:,:,3,3); 
+Va.E11 = Map_strain_sample(:,:,1,1);    Va.E12 = Map_strain_sample(:,:,1,2);    Va.E13 = Map_strain_sample(:,:,1,3);
+Va.E21 = Map_strain_sample(:,:,2,1);    Va.E22 = Map_strain_sample(:,:,2,2);    Va.E23 = Map_strain_sample(:,:,2,3);
+Va.E31 = Map_strain_sample(:,:,3,1);    Va.E32 = Map_strain_sample(:,:,3,2);    Va.E33 = Map_strain_sample(:,:,3,3);
         %
-        Values.Stiffness = C_rotated;   
-        Values.X   = Data.XSample;               	Values.Y   = Data.YSample;
+        Va.Stiffness = C_rotated;   
+        Va.X   = Data.XSample;               	Va.Y   = Data.YSample;
     end   
     % stepsize
-    Values.stepsize =(abs(Values.X(1,1)-Values.X(1,2)));
+    Va.stepsize =(abs(Va.X(1,1)-Va.X(1,2)));
     
 elseif exist('iPut') ~= 1 && exist('C_rotated') ~= 1  && exist('Maps') ~= 1
-    Values = Maps;
+    Va = Maps;
 else %if using my code
-    [filepath,~,~] = fileparts(DirxEBSD);
-    [~,name,~]     = fileparts(filepath);
-    load([filepath '\' name '.mat'],'Maps');
-    Values = Maps;
+    [filepath,named,~] = fileparts(DirxEBSD);
+    load([filepath '\' erase(named, '_XEBSD') '.mat'],'Maps');
+if isfield(Maps,'S21')==0 
+    Maps.S21 = Maps.S12;	 Maps.S31 = Maps.S13;     Maps.S32 = Maps.S23;
+    Maps.E21 = Maps.E12;	 Maps.E31 = Maps.E13;     Maps.E32 = Maps.E23;
+end
+    Va = Maps;
+if isfield(Maps,'A11')==0 
+    Va.A11 = Va.E11+Va.W11; Va.A12 = Va.E12+Va.W12; Va.A13 = Va.E13+Va.W13;
+    Va.A21 = Va.E21+Va.W21; Va.A22 = Va.E22+Va.W22; Va.A23 = Va.E23+Va.W23;
+    Va.A31 = Va.E31+Va.W31; Va.A32 = Va.E32+Va.W32; Va.A33 = Va.E33+Va.W33;
+end
+end
+Va.Wo = (1/2).*(Va.S11.*Va.E11 + Va.S12.*Va.E12 + Va.S13.*Va.E13 +...
+                Va.S21.*Va.E21 + Va.S22.*Va.E22 + Va.S23.*Va.E23 +...
+                Va.S31.*Va.E31 + Va.S32.*Va.E32 + Va.S33.*Va.E33);
+Va.nu  =  Va.Stiffness(1,2)/(Va.Stiffness(1,1)+ Va.Stiffness(1,2));
+Va.E   =  Va.Stiffness(1,1)*(1-2*Va.nu)*(1+Va.nu)/(1-Va.nu);
+Va.units.xy = 'um';       Va.units.S  = 'GPa';      Va.units.W = 'rad';    
+Va.units.E  = 'Abs.';     Va.units.St = 'GPa';
 end

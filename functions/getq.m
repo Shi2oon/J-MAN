@@ -26,18 +26,19 @@ x = mesh.UDIC(1,[nodes(Jint.nout(1,2),Jint.nout(2,1)),nodes(Jint.nin(1,2),Jint.n
 y = mesh.UDIC(2,[nodes(Jint.nout(1,2),Jint.nout(2,1)),nodes(Jint.nin(1,2),Jint.nin(2,1)),...
           nodes(Jint.nin(1,1),Jint.nin(2,2)),nodes(Jint.nout(1,1),Jint.nout(2,2))]);
       
+points = [x(1) y(1) 0;x(1) y(4) 0;x(4) y(4) 0;x(4) y(1) 0;x(2) y(2) 1;...
+    x(2) y(3) 1;x(3) y(3) 1;x(3) y(2) 1;];
+F = scatteredInterpolant(points(:,1), points(:,2), points(:,3));
+
+Jint.nQ = F(Jint.Ux,Jint.Uy);
+Jint.nQ = roundn(Jint.nQ,-5);
+
+
 % disp 'debug'
 % x = [x(1) -9.92 -9.92 x(4)];
 % y = [y(1) 0 0 y(4)];
       
 % [a,b]=meshgrid(x,y);
-points = [x(1) y(1) 0;x(1) y(4) 0;x(4) y(4) 0;x(4) y(1) 0;x(2) y(2) 1;x(2) y(3) 1;x(3) y(3) 1;x(3) y(2) 1;];
-F = scatteredInterpolant(points(:,1), points(:,2), points(:,3));
-
-Jint.nQ=F(Jint.Ux,Jint.Uy);
-% Jint.nQ = roundn(Jint.nQ,-5);
-
-
 % sizeFE = abs(mesh.winFE(1,:)-mesh.winFE(2,:))+1;
 % nodes = reshape(1:length(mesh.UFE),sizeFE(2),sizeFE(1));
 % 

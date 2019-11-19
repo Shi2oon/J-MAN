@@ -56,7 +56,7 @@ hcont = contour(gl.Uxdef*1000 ,gl.Uydef*1000 ,gl.dy,10,'LineWidth',1,'LineColor'
  %Create ylabel
   ylabel('y-axis (mm)');
  %Create title
-  title('DIC displacment field showing FE elements and J integral elements');
+  title({'DIC displacment field showing FE elements and J integral elements';''});
  %Create legend
  legend2 = legend(axesFE,[hdisp hJint(end)], ...
            'FE elements','J integral elements');
@@ -69,6 +69,7 @@ hcont = contour(gl.Uxdef*1000 ,gl.Uydef*1000 ,gl.dy,10,'LineWidth',1,'LineColor'
   axis([min(min(el.Uxdef))*1000  max(max(el.Uxdef))*1000 ...
       min(min(el.Uydef))*1000  max(max(el.Uydef))*1000 ]);
   axis square;
+  axis equal
 warning on
  
 elseif mesh.Operation =='Str'
@@ -118,7 +119,7 @@ hJint = fill([el.Ux(Jint.el,1)'*1000 ;el.Ux(Jint.el,2)'*1000 ;...
  %Create ylabel
   ylabel('y-axis (mm)');
  %Create title
-  title('Von Misess Stress showing FE elements and J integral elements');
+  title({'Von Misess Stress showing FE elements and J integral elements';''});
  %Create legend
  legend2 = legend(axesFE,[hdisp hJint(end)], ...
            'FE elements','J integral elements');

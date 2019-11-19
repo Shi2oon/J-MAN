@@ -1,0 +1,37 @@
+clear; clc; close all
+checks.SIF = [0.1, 0.5, 1, 5, 10, 50, 100];        
+
+for ii =1:length(checks.SIF)
+    [checks.files,checks.Operation,checks.unit] = Westergaard(checks.SIF(ii));
+    for i=2
+        clc; close all; clearvars -except i checks SIF ii
+        Dir.fullpath        = pwd;
+        Dir.fillname        = checks.files{i};
+        Operation           = checks.Operation{i};
+        Dir.input_unit      = checks.unit{i};
+        
+        main_JMAN
+        
+        contrs = length(Results);           contrs = contrs - round(contrs/5);
+        checks.Ktrue(ii,i)  = 1E-6.*((mean(Results(contrs:end,2))+max(Results(contrs:end,2)))/2);
+        checks.KCorr(ii,i)  = Ktrue;
+        checks.error(ii,i)  = ER;
+    end
+end
+
+close all
+CF.Dis = 1-mean(checks.Ktrue(:,1)./checks.SIF); %DIC correction factor
+CF.Str = 1-mean(checks.Ktrue(:,2)./checks.SIF); %DIC correction factor
+CF.xED = 1-mean(checks.Ktrue(:,3)./checks.SIF); %DIC correction factor
+save('Holy_Correction_Factors.mat','CF');
+
+% plot(checks.SIF,checks.Ktrue,'or');      hold on
+% plot(checks.SIF,Kcorr,'-k');             hold off
+% grid on
+% xlabel('K_{in}');                   ylabel('K_{out}')
+
+
+%% ANOTHE RWAY
+% mat.nu    = 0.3;          mat.E  = 210E9;                 mat.yield = 820E6;
+% mat.stressstat  = 'plane_strain';
+% [K,error] = WestergaardCorrection (1,mat,'Str',6,81)

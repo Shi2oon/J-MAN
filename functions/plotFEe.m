@@ -40,13 +40,14 @@ hdisp = pcolor(gl.Uxdef*1000 ,gl.Uydef*1000 ,gl.dy,'Parent',axesFE);
  %Create ylabel
   ylabel('y-axis (mm)');
  %Create title
-  title('Displacement Field (U_y) showing FE elements');
+  title({'U_y',''});
  %Create colorbar
   colorbar('peer',axesFE);   
         c = colorbar;           c.Label.String = 'U_y Displacement [m]';%labelling
-    
+    axis equal
   axis([min(min(el.Uxdef))*1000  max(max(el.Uxdef))*1000 ...
       min(min(el.Uydef))*1000  max(max(el.Uydef))*1000 ]);
+  
 warning on
 elseif mesh.Operation =='Str'
     warning off
@@ -90,11 +91,11 @@ elseif mesh.Operation =='Str'
  %Create ylabel
   ylabel('y-axis (mm)');
  %Create title
-  title('Displacement Field (U_y) showing FE elements');
+  title({'Displacement Field (U_y) showing FE elements',''});
         c = colorbar;           c.Label.String = 'U_y Displacement [m]';%labelling
  %Create colorbar
   colorbar('peer',axesFE);   
-    
+    axis equal
   axis([min(min(el.Uxdef*1000 )) max(max(el.Uxdef*1000 )) ...
       min(min(el.Uydef*1000 )) max(max(el.Uydef*1000 ))]);
 warning on

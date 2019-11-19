@@ -5,7 +5,13 @@ Yvec = y(:,1);
 
 H1 = figure;
 hold on
-imagesc(Xvec,Yvec,image)
+if V.type ~= 'G'
+    imagesc(Xvec,Yvec,image)
+    set(gca,'CLim',[min(min(image)) max(max(image))*5/8]); 
+else
+    imagesc(Xvec,Yvec,log10(image))
+    colormap(jet(256));                 set(gca,'CLim',[13 15.5]); 
+end
 set(gca,'YDir','normal')
 axis equal
 xlim([min(Xvec) max(Xvec)])
@@ -14,7 +20,6 @@ colorbar
 set(H1,'Name',['Select Horizontal Line (',V.type,'_',num2str(V.i),'_',...
     num2str(V.j),')'],'NumberTitle','off');
 title('Click the Crack start and tip')
-set(gca,'CLim',[min(min(image)) max(max(image))*5/8]); 
 xlabel(['x-position [',V.unit,']']);
 ylabel(['y-position [',V.unit,']']);
 colormap jet

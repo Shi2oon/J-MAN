@@ -1,4 +1,4 @@
-function DIC = prePlot(mesh,gl,y,Pla_reg,el)
+function DIC = prePlot2(mesh,gl,y,Pla_reg,el)
 %%
 %Figure
 if(y)
@@ -52,12 +52,12 @@ xlabel('along specimen length (m)');
 ylabel('along specimen width (m)');
 %Create title
 % title('\sigma_{VM} showing FE elements and J integral elements');
-title('u_y showing FE elements and J integral elements');
+title({'u_y showing FE elements and J integral elements';''});
 
 
 %Create colorbar
 colorbar('peer',axesDIC);
-
+axis tight; axis equal;
 axis([min(mesh.UDIC(1,:)) max(mesh.UDIC(1,:)) min(mesh.UDIC(2,:)) max(mesh.UDIC(2,:))]);
 colormap(jet)
 

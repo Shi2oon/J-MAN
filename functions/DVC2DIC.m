@@ -31,18 +31,14 @@ outputdata(:,4)=abc(:,3);
 % 120 and 97 are unique size of average ux and uy, you need to convert x and y into matrix to obtain size of the matrix
 %check the size of x and y by using size(unique(x); and size(unique(y));
 %(in this case, the x=97 and y=120)
-x=outputdata(:,1);
-y=outputdata(:,2);
-ux=outputdata(:,3);
-uy=outputdata(:,4);
-% xr=reshape(x,length(unique(y)),length(unique(x)));
-xr=reshape(x,90,104);%(120,97 need to be changed accordingly based on your own data size)% 
-% yr=reshape(y,length(unique(y)),length(unique(x)));
-yr=reshape(y,90,104);
-% uxr=reshape(ux,length(unique(y)),length(unique(x)));
-uxr=reshape(ux,90,104);
-% uyr=reshape(uyr,length(unique(y)),length(unique(x)));
-uyr=reshape(uy,90,104);
+x   = outputdata(:,1);
+y   = outputdata(:,2);
+ux  = outputdata(:,3);
+uy  = outputdata(:,4);
+xr  = reshape(x,length(unique(y)),length(unique(x)));
+yr  = reshape(y,length(unique(y)),length(unique(x)));
+uxr = reshape(ux,length(unique(y)),length(unique(x)));
+uyr = reshape(uy,length(unique(y)),length(unique(x)));
 % figure uyr (if imagesc doesn't work use function: scatter)
 imagesc(x,y,uxr);
 c = colorbar('FontSize',20);
